@@ -4,4 +4,4 @@
 > run `train.py` to train the model
 
 #### Testing
-> You don't(just set epoch number to 0)
+> You Don't (just set epoch number to 0)
