@@ -1,0 +1,49 @@
+{
+  "geo": {
+    "including_types": [
+      "Point"
+    ],
+    "Point": {}
+  },
+  "dyna": {
+    "including_types": [
+      "state"
+    ],
+    "state": {
+      "entity_id": "geo_id",
+      "acoustic_pollution": "num"
+    }
+  },
+  "info": {
+    "data_col": [
+      "in_flow",
+      "out_flow"
+    ],
+    "weight_col": "link_weight",
+    "ext_col": [
+      "temperature",
+      "dew_point_temperature",
+      "relative_humidity",
+      "wind_speed",
+      "aqi",
+      "pm2.5",
+      "pm10",
+      "so2",
+      "no2",
+      "co",
+      "o3"
+    ],
+    "data_files": [
+      "BJMETRO"
+    ],
+    "geo_file": "BJMETRO",
+    "rel_file": "BJMETRO",
+    "ext_file": "BJMETRO",
+    "output_dim": 2,
+    "time_intervals": 900,
+    "init_weight_inf_or_zero": "inf",
+    "set_weight_link_or_dist": "dist",
+    "calculate_weight_adj": false,
+    "weight_adj_epsilon": 0.1
+  }
+}

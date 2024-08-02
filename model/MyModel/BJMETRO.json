@@ -1,0 +1,15 @@
+{
+  "input_time": 4,
+  "output_time": 4,
+  "gcn_dim": 256,
+  "date_embed_dim": 64,
+  "encoder_dim": 128,
+  "station_embed_dim": 128,
+  "cheby_k": 4,
+  "a": 10000,
+  "temperature": 0.2,
+
+  "vae_dim": 32,
+  "beta": 0.3,
+  "vae_ratio": 0.01
+}

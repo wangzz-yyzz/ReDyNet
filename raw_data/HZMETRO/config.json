@@ -1,0 +1,48 @@
+{
+  "geo": {
+    "including_types": [
+      "Point"
+    ],
+    "Point": {}
+  },
+  "rel": {
+    "including_types": [
+      "geo"
+    ],
+    "geo": {
+      "connection": "num",
+      "similarity": "num",
+      "correlation": "num"
+    }
+  },
+  "dyna": {
+    "including_types": [
+      "state"
+    ],
+    "state": {
+      "entity_id": "geo_id",
+      "inflow": "num",
+      "outflow": "num"
+    }
+  },
+  "info": {
+    "data_col": [
+      "inflow",
+      "outflow"
+    ],
+    "weight_col": [
+      "connection"
+    ],
+    "data_files": [
+      "HZMETRO"
+    ],
+    "geo_file": "HZMETRO",
+    "rel_file": "HZMETRO",
+    "output_dim": 2,
+    "time_intervals": 900,
+    "init_weight_inf_or_zero": "inf",
+    "set_weight_link_or_dist": "dist",
+    "calculate_weight_adj": false,
+    "weight_adj_epsilon": 0.1
+  }
+}
