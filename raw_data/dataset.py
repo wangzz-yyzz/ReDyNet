@@ -69,11 +69,9 @@ class Dataset:
             dynafile = pd.read_csv(self.data_path + self.dataset + '.dyna')
         selected = ['time', 'entity_id', 'inflow', 'outflow']
         dynafile = dynafile[selected]
-        self.timeslots = list(dynafile['time'][:int(dynafile.shape[0] / len(self.geo_ids))])  # 每个站点数据量相等
+        self.timeslots = list(dynafile['time'][:int(dynafile.shape[0] / len(self.geo_ids))])
         print('timeslots:', len(self.timeslots))
-        # origin format: '2019-01-01T00:00:00Z'
         self.timeslots = list(map(lambda x: x.replace('T', ' ').replace('Z', ''), self.timeslots))
-        # processed format: '2019-01-01 00:00:00'
         self.timeslots = np.array(self.timeslots, dtype='datetime64[ns]')
 
         feature_dim = len(dynafile.columns) - 2
@@ -93,8 +91,8 @@ class Dataset:
         data_list = [df]
         date_list = []
         if self.add_time_in_day and not is_time_nan:
-            time_in_day = self.timeslots.astype("datetime64[h]").astype(int) % 24  # [T,]
-            time_in_day = time_in_day.astype(int)  # [T,]
+            time_in_day = self.timeslots.astype("datetime64[h]").astype(int) % 24
+            time_in_day = time_in_day.astype(int)
             time_in_day = time_in_day.reshape(-1, 1)
             date_list.append(time_in_day)
             time_in_day = np.tile(time_in_day, [1, num_nodes])
@@ -102,11 +100,8 @@ class Dataset:
             data_list.append(time_in_day)
 
         if self.add_day_in_week and not is_time_nan:
-            # convert to year-month-day
             y_m_d = self.timeslots.astype("datetime64[D]").astype(int)
-            # convert to datetime object
             y_m_d = list(map(lambda x: datetime.datetime.utcfromtimestamp(x * 3600 * 24), y_m_d))
-            # convert to day in week
             day_in_week = list(map(lambda x: x.weekday(), y_m_d))
             day_in_week = np.array(day_in_week)
             day_in_week = day_in_week.astype(int)
@@ -128,7 +123,6 @@ class Dataset:
                     time = self.timeslots[i]
                     nearest_time = weather_raw["date"].values[np.argmin(np.abs(weather_raw["date"].values - time))]
                     weather_info = weather_raw[weather_raw["date"] == nearest_time]
-                    # print("nearest_time:", nearest_time, "date:", time)
                     weather_info = weather_info.values[0][1:]
                     weather.append(weather_info)
                 weather = np.array(weather, dtype=float)
@@ -137,8 +131,6 @@ class Dataset:
             else:
                 weather = pd.read_csv(self.data_path + self.dataset + '.env').values
             weather = weather.astype(float)
-            # convert [T, F] to [T, N, F]
-            # weather = np.tile(weather, [num_nodes, 1]).reshape(num_nodes, -1, 5).transpose(1, 0, 2)
             weather = np.expand_dims(weather, axis=1)
             weather = np.tile(weather, [num_nodes, 1])
             data_list.append(weather)
@@ -150,7 +142,7 @@ class Dataset:
 
     def _generate_input_data(self, df):
         num_samples = df.shape[0]
-        x_offsets = np.sort(np.concatenate((np.arange(-self.input_window + 1, 1, 1),)))  # index偏移量
+        x_offsets = np.sort(np.concatenate((np.arange(-self.input_window + 1, 1, 1),)))
         y_offsets = np.sort(np.arange(1, self.output_window + 1, 1))
 
         x, y = [], []
@@ -161,19 +153,19 @@ class Dataset:
             y_t = df[t + y_offsets, ...]
             x.append(x_t)
             y.append(y_t)
-        x = np.stack(x, axis=0)  # (num_samples,input_length,num_nodes,feature_dim) num_samples!=len_time
+        x = np.stack(x, axis=0)
         y = np.stack(y, axis=0)
         return x, y
 
     def _generate_data(self):
         x_list, y_list = [], []
-        df = self._load_dyna()  # (len_time, num_nodes, feature_dim)
+        df = self._load_dyna()
         if self.load_external:
-            df = self._add_external_information_3d(df)  # ext_data=None
+            df = self._add_external_information_3d(df)
         x, y = self._generate_input_data(df)
         x_list.append(x)
         y_list.append(y)
-        x = np.concatenate(x_list)  # (num_samples,input_length,num_nodes,feature_dim) num_samples!=len_time
+        x = np.concatenate(x_list)
         y = np.concatenate(y_list)
         return x, y
 

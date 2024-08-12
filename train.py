@@ -88,7 +88,7 @@ class Trainer:
             self.lr_scheduler.step()
 
             if (epoch_idx % self.log_every) == 0:
-                log_lr = self.optimizer.param_groups[0]['lr']  # 当前学习率
+                log_lr = self.optimizer.param_groups[0]['lr']
                 message = ('Epoch [{}/{}] train_loss: {:.4f}, val_loss: {:.4f}, mae: {:.4f}, rmse: {:.4f}, '
                            'mape: {:.4f}, lr: {:.6f}, {:.2f}s'). \
                     format(epoch_idx, self.num_epochs, train_loss, val_loss, mae_loss, rmse_loss, mape_loss, log_lr,
@@ -98,7 +98,7 @@ class Trainer:
                     nni.report_intermediate_result({'default': mae_loss,
                                                     'rmse': rmse_loss, 'mape': mape_loss})
 
-            if val_loss < min_val_loss and epoch_idx % self.log_every == 0:  # 修改，不是每一轮都保存
+            if val_loss < min_val_loss and epoch_idx % self.log_every == 0:
                 wait = 0
                 if self.saved:
                     self.save_model_with_epoch(epoch_idx)
@@ -150,7 +150,7 @@ class Trainer:
                 y_preds.append(y_pred.cpu().numpy())
 
             y_preds = np.concatenate(y_preds, axis=0)
-            y_truths = np.concatenate(y_truths, axis=0)  # concatenate on batch
+            y_truths = np.concatenate(y_truths, axis=0)
             outputs = {'prediction': y_preds, 'truth': y_truths}
 
             self.evaluator.clear()
@@ -168,7 +168,7 @@ def set_seeds(seed):
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU.
+    torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
@@ -192,17 +192,14 @@ if __name__ == '__main__':
     parser.add_argument("--pad_with_last_sample", type=bool, default=False, help=".", )
     parser.add_argument("--num_workers", type=int, default=0, help="Num workers.", )
     # adj_mx
-    parser.add_argument("--bidir_adj_mx", type=bool, default=True, help="=True代表构造无向图，=False为有向图.", )
-    parser.add_argument("--set_weight_link_or_dist", type=str, default='link',
-                        help="为link代表构造01矩阵，dist代表构造权重矩阵（非01）", )
-    parser.add_argument("--init_weight_inf_or_zero", type=str, default='zero',
-                        help="`zero`代表矩阵初始化为全0，`inf`代表矩阵初始化成全inf.", )
-    parser.add_argument("--calculate_weight_adj", type=bool, default=False,
-                        help="=True表示对权重矩阵应用带阈值的高斯核函数进行稀疏化，对01矩阵不做处理，=False不进行稀疏化.", )
+    parser.add_argument("--bidir_adj_mx", type=bool, default=True)
+    parser.add_argument("--set_weight_link_or_dist", type=str, default='link')
+    parser.add_argument("--init_weight_inf_or_zero", type=str, default='zero')
+    parser.add_argument("--calculate_weight_adj", type=bool, default=False)
     parser.add_argument("--weight_adj_epsilon", type=float, default=0.1, help="weight_adj_epsilon.", )
     # external
     parser.add_argument("--load_external", type=bool, default=True, help="Whether load external or not.", )
-    parser.add_argument("--ext_dim", type=int, default=0, help="External dim.", )  # ?
+    parser.add_argument("--ext_dim", type=int, default=0, help="External dim.", )
     parser.add_argument("--add_day_in_week", type=bool, default=True, help="Whether add day in week or not.", )
     parser.add_argument("--add_time_in_day", type=bool, default=True, help="Whether add time in day or not.", )
     parser.add_argument("--add_weather", type=bool, default=True, help="Whether add weather or not.", )

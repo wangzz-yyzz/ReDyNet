@@ -1,11 +1,9 @@
-import nni
 import torch
 import torch.nn as nn
 
 import loss
 from model.BaseModel import BaseModel
 from model.MyModel.DyGCN import DyGCN
-from model.MyModel.attention import SelfAttention
 from model.MyModel.collector import Collector
 from model.MyModel.decoder import Decoder, VaeDecoder, VaeEncoder
 from model.MyModel.encoder import StationEncoder, DateEncoder, EnvEncoder
@@ -55,8 +53,6 @@ class ReDyNet(BaseModel):
         self.station_norm = nn.LayerNorm(self.encoder_dim)
         self.date_norm = nn.LayerNorm(self.encoder_dim)
         self.env_norm = nn.LayerNorm(self.encoder_dim)
-
-        self.self_attention = SelfAttention(self.encoder_dim, self.encoder_dim, self.encoder_dim)
 
         self.vae_encoder = VaeEncoder(input_dim=self.encoder_dim, output_dim=self.vae_dim)
         self.rec_decoder = VaeDecoder(input_dim=self.vae_dim, output_dim=self.encoder_dim)

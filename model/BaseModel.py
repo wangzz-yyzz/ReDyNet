@@ -14,8 +14,6 @@ class BaseModel(nn.Module, ABC):
         self.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
         self._scaler = data_feature.get('scaler')
 
-        # self._init_parameters()
-
     @abstractmethod
     def calculate_loss_train(self, batch):
         # y_true = batch['y']
